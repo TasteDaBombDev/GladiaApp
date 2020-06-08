@@ -4,50 +4,53 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.app.Login;
 import com.example.app.R;
-import com.example.app.ServerRequest;
-import com.example.app.userScreen.MainScreen;
-import com.google.gson.JsonObject;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class FriendsActivity extends AppCompatActivity {
 
     ListView friendsListing;
+    private Adapter adapter;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friends_activity);
+        final TextInputLayout textInputLayout = findViewById(R.id.outlineSearch);
+        textInputLayout.setAlpha(0.0f);
+
+        AppBarLayout appbar = findViewById(R.id.appbar);
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                float m = Math.abs((229 + verticalOffset)/229.0f);
+                textInputLayout.setAlpha(m);
+            }
+        });
+
 
         ImageButton back = findViewById(R.id.backToMainScreen);
+        final EditText search = findViewById(R.id.searchBar);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,19 +58,35 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
-
         friendsListing = findViewById(R.id.listview);
-        Adapter adapter = new Adapter(FriendsActivity.this,Profile.getNames(),Profile.getPaths());
+        adapter = new Adapter(FriendsActivity.this,Profile.getNames(),Profile.getPaths());
         friendsListing.setAdapter(adapter);
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                (FriendsActivity.this).adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     class Adapter extends ArrayAdapter<String>{
 
         Context context;
-        String names[];
-        String paths[];
+        String[] names;
+        String[] paths;
 
-        Adapter(Context c, String names[], String paths[]){
+        Adapter(Context c, String[] names, String[] paths){
             super(c, R.layout.firend_item,R.id.friendName, names);
             this.context = c;
             this.names = names;
@@ -78,7 +97,8 @@ public class FriendsActivity extends AppCompatActivity {
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-            View item = layoutInflater.inflate(R.layout.firend_item,parent,false);
+            assert layoutInflater != null;
+            @SuppressLint("ViewHolder") View item = layoutInflater.inflate(R.layout.firend_item,parent,false);
             TextView name = item.findViewById(R.id.friendName);
             ImageView image = item.findViewById(R.id.friendPic);
             name.setText(names[position]);

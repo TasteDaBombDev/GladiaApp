@@ -123,7 +123,6 @@ public class Profile extends Fragment {
         serverRun();
 
 
-
         jobLayout1 = new LinearLayout(getContext());
         bussinesPic1 = new ImageView(getContext());
         bussinesText1 = new TextView(getContext());
@@ -544,7 +543,6 @@ public class Profile extends Fragment {
             @Override
             public void onResponse(String response) {
                 try {
-                    int rec = 1;
                     JSONObject jsonObject = new JSONObject(response);
                     for (int i = 0; i < jsonObject.getInt("noOfFriends"); i++) {
                         names[i] = jsonObject.getString("nume" + (i + 1));
