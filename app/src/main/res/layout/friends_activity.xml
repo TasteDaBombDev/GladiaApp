@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:scrollbars="vertical"
-                tools:context=".userScreen.profile.FriendsActivity">
+                tools:context=".userScreen.profile.friends.FriendsActivity">
 
                 <ListView
                     android:id="@+id/listview"

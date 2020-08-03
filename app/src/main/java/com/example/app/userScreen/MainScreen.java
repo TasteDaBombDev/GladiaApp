@@ -4,11 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
-import com.example.app.Login;
 import com.example.app.R;
-import com.google.android.gms.maps.GoogleMap;
+import com.example.app.userScreen.map.MapActivity;
 
 public class MainScreen extends AppCompatActivity {
 
@@ -51,8 +49,8 @@ public class MainScreen extends AppCompatActivity {
 
         EnumFragments enumFragments = new EnumFragments(getSupportFragmentManager(),this);
         viewPager.setAdapter(enumFragments);
-        viewPager.setCurrentItem(extras.getInt("pannel"));
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setCurrentItem(1);
+        viewPager.setOffscreenPageLimit(3);
         
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 

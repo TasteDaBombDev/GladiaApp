@@ -1,4 +1,4 @@
-package com.example.app.userScreen.profile;
+package com.example.app.userScreen.profile.friends;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +18,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.app.R;
+import com.example.app.userScreen.profile.Profile;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Picasso;
@@ -59,7 +59,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
         friendsListing = findViewById(R.id.listview);
-        adapter = new Adapter(FriendsActivity.this,Profile.getNames(),Profile.getPaths());
+        adapter = new Adapter(FriendsActivity.this, Profile.getNames(),Profile.getPaths());
         friendsListing.setAdapter(adapter);
 
         search.addTextChangedListener(new TextWatcher() {
