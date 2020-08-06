@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
 
-    <com.example.app.utils.VerticalViewPager
+    <com.zone.app.utils.VerticalViewPager
         android:id="@+id/vVP"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,6 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </com.example.app.utils.VerticalViewPager>
+    </com.zone.app.utils.VerticalViewPager>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

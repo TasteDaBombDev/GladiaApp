@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.app">
+    package="com.zone.app">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
     <application
         android:allowBackup="true"
@@ -15,37 +17,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".userScreen.profile.friends.FriendsActivity" />
-<!--        <activity android:name=".register.termsAndConditions.Terms3" />-->
-<!--        <activity android:name=".register.termsAndConditions.Terms2" />-->
-<!--        <activity android:name=".register.termsAndConditions.Terms1" />-->
-        <activity android:name=".register.termsAndConditions.TermsAndConditionsMain" />
-        <activity android:name=".userScreen.profile.EditProfile" />
-<!--        <activity android:name=".userScreen.Groups" />-->
-<!--        <activity android:name=".userScreen.Evenimente" />-->
-<!--        <activity android:name=".userScreen.profile.Profile" />-->
-<!--        <activity android:name=".userScreen.MapActivity" />-->
-<!--        <activity android:name=".register.Register2" />-->
-<!--        <activity android:name=".register.Register4" />-->
-        <activity android:name=".Login" />
-        <activity android:name=".SplashScreen">
+        <activity android:name="com.zone.app.userScreen.profile.friends.FriendsActivity" />
+        <activity android:name="com.zone.app.register.termsAndConditions.TermsAndConditionsMain" />
+        <activity android:name="com.zone.app.userScreen.profile.EditProfile" />
+        <activity android:name="com.zone.app.Login" />
+        <activity android:name="com.zone.app.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".register.Register" />
+        <activity android:name="com.zone.app.register.Register" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
-        <activity android:name=".userScreen.MainScreen" />
-<!--        <activity android:name=".register.Register3" />-->
-<!--        <activity android:name=".register.Register1" />-->
-        <activity android:name=".MainActivity" />
-        <activity android:name=".register.RegisterMainScreen" />
+        <activity android:name="com.zone.app.userScreen.MainScreen" />
+        <activity android:name="com.zone.app.MainActivity" />
+        <activity android:name="com.zone.app.register.RegisterMainScreen" />
     </application>
 
 </manifest>
