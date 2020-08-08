@@ -5,6 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -33,6 +37,7 @@ import com.zone.app.utils.EventsDetails;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -55,6 +60,7 @@ public class Evenimente extends Fragment {
     private boolean filterOpen = false;
     private SeekBar distance;
     private TextView filtersText, distanceAfis;
+    private RecyclerView recyclerView;
 
     private View view;
 
@@ -82,6 +88,22 @@ public class Evenimente extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.events,container,false);
         init();
+        StaggeredGridLayoutManager managerListing = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(managerListing);
+
+        ArrayList<String> personNames = new ArrayList<>();
+        personNames.add("Nume1");
+        personNames.add("nume2");
+        personNames.add("nume3");
+
+        ArrayList<String> personImages = new ArrayList<>();
+        personImages.add("https://lp-cms-production.imgix.net/2019-06/3cb45f6e59190e8213ce0a35394d0e11-nice.jpg");
+        personImages.add("https://wallpapercave.com/wp/wp2550666.jpg");
+        personImages.add("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRWbe0WDr9S3d09ASHjriu0DDnoM_pQeFaXNA&usqp=CAU");
+
+        CustomAdapter customAdapter = new CustomAdapter(getContext(), personNames, personImages);
+        recyclerView.setAdapter(customAdapter);
+
         TransitionManager.beginDelayedTransition(header);
 
         filterBtn.setOnClickListener(view -> {
@@ -104,7 +126,7 @@ public class Evenimente extends Fragment {
 
                 filtersText.setText("Evenimente din jurul meu");
 
-                set.constrainPercentHeight(R.id.header, 0.2f);
+                set.constrainPercentHeight(R.id.header, 0.18f);
 
                 set.applyTo(root);
 
@@ -189,5 +211,6 @@ public class Evenimente extends Fragment {
         filtersText = view.findViewById(R.id.filtersTextSwitch);
         distance = view.findViewById(R.id.distance);
         distanceAfis = view.findViewById(R.id.distanceAfis);
+        recyclerView = view.findViewById(R.id.eventsListing);
     }
 }

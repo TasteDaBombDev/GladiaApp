@@ -197,7 +197,6 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback 
                         super.onLocationResult(locationResult);
 
                         MapActivity.localize(MainScreen.this, locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
-                        Toast.makeText(MainScreen.this, "Deschide-ti locatia!", Toast.LENGTH_SHORT).show();
                     }
                 }, getMainLooper());
             }
