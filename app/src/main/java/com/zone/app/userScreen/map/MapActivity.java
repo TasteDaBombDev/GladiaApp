@@ -206,7 +206,14 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     for (int i = 0; i < jsonObject.length() / 2; i++) {
-                        locations.add(new LocationInfo(jsonObject.getDouble("lat" + i), jsonObject.getDouble("lng" + i)));
+
+                        locations.add(new LocationInfo(
+                                jsonObject.getDouble("lat" + i),
+                                jsonObject.getDouble("lng" + i),
+                                jsonObject.getString("name" + i),
+                                jsonObject.getString("poza" + i),
+                                ""));
+
                     }
                     constructLocations(c);
                 } catch (JSONException e) {
