@@ -29,6 +29,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -53,6 +60,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.zone.app.userScreen.MainScreen;
+import com.zone.app.utils.EventsDetails;
+import com.zone.app.utils.LocationInfo;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.Context.LOCATION_SERVICE;
@@ -64,6 +80,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private View view;
 
     private static GoogleMap map;
+    private static ArrayList<LocationInfo> locations = new ArrayList<>();
     private MapView mapView;
     private static final int REQUEST_CODE = 101;
     private static LatLng me;
@@ -71,7 +88,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private static final int ZOOM = 15;
 
     public MapActivity() {
-
     }
 
     public static MapActivity getINSTANCE() {
@@ -97,6 +113,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         view = inflater.inflate(R.layout.map_fragment, container, false);
         constructINTERFACE();
+
 
         return view;
     }
@@ -133,6 +150,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
 
                 map.addMarker(markerOptions);
+
+                runServer(getContext());
             } else {
                 new Handler().postDelayed(() -> {
                     MarkerOptions markerOptions = new MarkerOptions().title("me")
@@ -143,6 +162,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
 
                     map.addMarker(markerOptions);
+
+                    runServer(getContext());
                 }, 1000);
             }
         }
@@ -160,6 +181,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
 
                 map.addMarker(markerOptions);
+
+                runServer(c);
             } else stillInfo = true;
 
 
@@ -172,6 +195,35 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         Canvas canvas = new Canvas(b);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(b);
+    }
+
+    private static void runServer(Context c){
+        String urlUpload = "http://gladiaholdings.com/PHP/utilizatori/findLocationsNearMe.php";
+
+        StringRequest stringRequest =  new StringRequest(Request.Method.POST, urlUpload, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    for (int i = 0; i < jsonObject.length() / 2; i++) {
+                        locations.add(new LocationInfo(jsonObject.getDouble("lat" + i), jsonObject.getDouble("lng" + i)));
+                    }
+                    constructLocations(c);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, error -> Toast.makeText(c, "Check your internet connection and try again.", Toast.LENGTH_SHORT).show()){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("lat", String.valueOf(me.latitude));
+                params.put("lng", String.valueOf(me.longitude));
+                return params;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(c);
+        queue.add(stringRequest);
     }
 
 //
@@ -291,5 +343,13 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
             }
         });
+    }
+
+    private static void constructLocations(Context c){
+        for (int i = 0; i < locations.size(); i++) {
+            MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(locations.get(i).getLat(), locations.get(i).getLng()))
+                    .icon(bitmapDescriptorFromVector(c, R.drawable.ic_baseline_apartment_24, 100,100));
+            map.addMarker(markerOptions);
+        }
     }
 }
