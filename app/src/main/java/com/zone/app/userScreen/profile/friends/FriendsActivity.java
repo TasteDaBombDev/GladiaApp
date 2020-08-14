@@ -39,12 +39,9 @@ public class FriendsActivity extends AppCompatActivity {
         textInputLayout.setAlpha(0.0f);
 
         AppBarLayout appbar = findViewById(R.id.appbar);
-        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                float m = Math.abs((229 + verticalOffset)/229.0f);
-                textInputLayout.setAlpha(m);
-            }
+        appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            float m = Math.abs((229 + verticalOffset)/229.0f);
+            textInputLayout.setAlpha(m);
         });
 
 

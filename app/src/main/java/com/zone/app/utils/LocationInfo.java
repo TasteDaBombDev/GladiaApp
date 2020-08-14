@@ -7,13 +7,16 @@ public class LocationInfo {
     private String name;
     private String path;
     private String atributes;
+    private String TAG;
+    private boolean opened = false;
 
-    public LocationInfo(double lat, double lng, String name, String path, String atributes) {
+    public LocationInfo(double lat, double lng, String name, String path, String atributes, String TAG) {
         this.lat = lat;
         this.lng = lng;
         this.name = name;
         this.path = path;
         this.atributes = atributes;
+        this.TAG = TAG;
     }
 
     public void setLat(double lat) {
@@ -55,5 +58,21 @@ public class LocationInfo {
 
     public void setAtributes(String atributes) {
         this.atributes = atributes;
+    }
+
+    public String getTAG() {
+        return TAG;
+    }
+
+    public void setTAG(String TAG) {
+        this.TAG = TAG;
+    }
+
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
     }
 }
