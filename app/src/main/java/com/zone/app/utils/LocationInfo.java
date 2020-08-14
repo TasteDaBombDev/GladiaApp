@@ -8,9 +8,11 @@ public class LocationInfo {
     private String path;
     private String atributes;
     private String TAG;
+    private int id;
     private boolean opened = false;
 
-    public LocationInfo(double lat, double lng, String name, String path, String atributes, String TAG) {
+    public LocationInfo(int id, double lat, double lng, String name, String path, String atributes, String TAG) {
+        this.id = id;
         this.lat = lat;
         this.lng = lng;
         this.name = name;
@@ -74,5 +76,13 @@ public class LocationInfo {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 }

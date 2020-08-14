@@ -9,7 +9,7 @@ public class EventsDetails {
     private String ora;
     private String type;
     private String poza;
-    private Double distance;
+    private double distance;
 
     public EventsDetails(int order, double distance, int ID, String poza, String name, String date, String ora, String type) {
         this.order = order;
@@ -22,11 +22,11 @@ public class EventsDetails {
         this.type = type;
     }
 
-    public Double getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(Double distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 

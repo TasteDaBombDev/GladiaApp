@@ -196,6 +196,7 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback 
                     public void onLocationResult(LocationResult locationResult) {
                         super.onLocationResult(locationResult);
 
+                        locationResult = null;
                         MapActivity.localize(MainScreen.this, locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
                     }
                 }, getMainLooper());

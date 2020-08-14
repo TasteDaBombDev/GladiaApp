@@ -216,8 +216,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         googleMap.setOnMarkerClickListener(marker -> {
 
-//                TransitionManager.beginDelayedTransition(rootMain);
-
             for (int i = 0; i < locations.size(); i++) {
                 if(marker.getSnippet().equals(locations.get(i).getTAG()) && !locations.get(i).isOpened()){
                     locations.get(i).setOpened(true);
@@ -302,9 +300,10 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    for (int i = 0; i < jsonObject.length() / 5; i++) {
+                    for (int i = 0; i < jsonObject.length() / 6; i++) {
 
                         locations.add(new LocationInfo(
+                                jsonObject.getInt("id" + i),
                                 jsonObject.getDouble("lat" + i),
                                 jsonObject.getDouble("lng" + i),
                                 jsonObject.getString("name" + i),

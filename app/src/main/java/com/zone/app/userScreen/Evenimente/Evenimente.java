@@ -60,7 +60,7 @@ public class Evenimente extends Fragment {
     private boolean filterOpen = false;
     private SeekBar distance;
     private TextView filtersText, distanceAfis;
-    private RecyclerView recyclerView;
+    private static RecyclerView recyclerView;
 
     private View view;
 
@@ -90,20 +90,36 @@ public class Evenimente extends Fragment {
         init();
         StaggeredGridLayoutManager managerListing = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(managerListing);
-
-        ArrayList<String> personNames = new ArrayList<>();
-        personNames.add("Nume1");
-        personNames.add("nume2");
-        personNames.add("nume3");
-
-        ArrayList<String> personImages = new ArrayList<>();
-        personImages.add("https://lp-cms-production.imgix.net/2019-06/3cb45f6e59190e8213ce0a35394d0e11-nice.jpg");
-        personImages.add("https://wallpapercave.com/wp/wp2550666.jpg");
-        personImages.add("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRWbe0WDr9S3d09ASHjriu0DDnoM_pQeFaXNA&usqp=CAU");
-
-        CustomAdapter customAdapter = new CustomAdapter(getContext(), personNames, personImages);
-        recyclerView.setAdapter(customAdapter);
-
+//
+//        ArrayList<String> personNames = new ArrayList<>();
+//        personNames.add("Nume1");
+//        personNames.add("nume2");
+//        personNames.add("nume3");
+//        personNames.add("nume3");
+//
+//        ArrayList<String> personImages = new ArrayList<>();
+//        personImages.add("https://lp-cms-production.imgix.net/2019-06/3cb45f6e59190e8213ce0a35394d0e11-nice.jpg");
+//        personImages.add("https://wallpapercave.com/wp/wp2550666.jpg");
+//        personImages.add("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRWbe0WDr9S3d09ASHjriu0DDnoM_pQeFaXNA&usqp=CAU");
+//        personImages.add("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRWbe0WDr9S3d09ASHjriu0DDnoM_pQeFaXNA&usqp=CAU");
+//
+//        ArrayList<String> personDate = new ArrayList<>();
+//        personDate.add("12/02/2000\n15:01 - 15:02");
+//        personDate.add("12/02/2000\n15:01 - 15:02");
+//        personDate.add("12/02/2000\n15:01 - 15:02");
+//        personDate.add("12/02/2000\n15:01 - 15:02");
+//
+//        ArrayList<String> personLocation = new ArrayList<>();
+//        personLocation.add("Locatia mea");
+//        personLocation.add("Aleeea teilor");
+//        personLocation.add("bucuresti, secotor 3");
+//        personLocation.add("bucuresti, secotor 3");
+//
+//        ArrayList<String> detalii = new ArrayList<>();
+//        detalii.add("detalii: asda | detalkslda | alksjdnla | aslda");
+//        detalii.add("aslkdjad | asdasd |Asdad |");
+//        detalii.add("");
+//        detalii.add("aslkdjad | asdasd |Asdad |");
         TransitionManager.beginDelayedTransition(header);
 
         filterBtn.setOnClickListener(view -> {
@@ -133,6 +149,8 @@ public class Evenimente extends Fragment {
                 filterOpen = false;
 
                 filters.setVisibility(View.GONE);
+
+                setFilters();
             }
         });
 
@@ -159,39 +177,35 @@ public class Evenimente extends Fragment {
     public static void setEventsNearMe(final Context c, final double lat, final double lng){
         String urlUpload = "http://gladiaholdings.com/PHP/utilizatori/findEventsNearMe.php";
 
-        StringRequest stringRequest =  new StringRequest(Request.Method.POST, urlUpload, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    for (int i = 0; i < jsonObject.length() / 7; i++) {
-                        database.addVal(new EventsDetails(i,
-                                jsonObject.getDouble("distance" + i),
-                                jsonObject.getInt("id" + i),
-                                jsonObject.getString("poza" + i),
-                                jsonObject.getString("nume" + i),
-                                jsonObject.getString("date" + i),
-                                jsonObject.getString("hours" + i),
-                                jsonObject.getString("type" + i)));
-                    }
-                    Log.e("database", database.toString());
-                } catch (JSONException e) {
-                    Toast.makeText(c, "Error loading your event" + response, Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
+        StringRequest stringRequest =  new StringRequest(Request.Method.POST, urlUpload, response -> {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                for (int i = 0; i < jsonObject.length() / 7; i++) {
+                    database.addVal(new EventsDetails(i,
+                            jsonObject.getDouble("distance" + i),
+                            jsonObject.getInt("id" + i),
+                            jsonObject.getString("poza" + i),
+                            jsonObject.getString("nume" + i),
+                            jsonObject.getString("date" + i),
+                            jsonObject.getString("hours" + i),
+                            jsonObject.getString("type" + i)));
                 }
+                Log.e("asklda", "lahsdlahdkasda--------------sadfasf" + database.size() + " " + jsonObject.length());
+                Log.e("asjkdhakshdasd", "" + jsonObject.toString());
+                CustomAdapter customAdapter = new CustomAdapter(c, database);
+                recyclerView.setAdapter(customAdapter);
+            } catch (JSONException e) {
+                Toast.makeText(c, "Error loading your event" + response, Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
 
-            }
-        }, new Response.ErrorListener() {
+        }, error -> Toast.makeText(c, "Check your internet connection and try again.", Toast.LENGTH_SHORT).show()){
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(c, "Check your internet connection and try again.", Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("lat", String.valueOf(lat));
                 params.put("lng", String.valueOf(lng));
+                Log.e("params", lat + " " + lng);
                 return params;
             }
         };
@@ -212,5 +226,27 @@ public class Evenimente extends Fragment {
         distance = view.findViewById(R.id.distance);
         distanceAfis = view.findViewById(R.id.distanceAfis);
         recyclerView = view.findViewById(R.id.eventsListing);
+    }
+
+    private void setFilters(){
+        int myDistance = distance.getProgress();
+        ArrayList<EventsDetails> unsorted = database.toArrayList();
+        BiFunction<EventsDetails, EventsDetails, Integer> sortDistanceID = (a, b) -> {
+            if(a.getDistance() < b.getDistance())
+                return -1;
+                else if(a.getDistance() > b.getDistance())
+                    return 1;
+                else if(a.getID() < b.getID())
+                    return -1;
+                    else return 1;
+        };
+        AVLtree<EventsDetails> sorted = new AVLtree<>(sortDistanceID);
+        for (int i = 0; i < unsorted.size(); i++) {
+            if(unsorted.get(i).getDistance() <= myDistance){
+                sorted.addVal(unsorted.get(i));
+            }
+        }
+        CustomAdapter c = new CustomAdapter(getContext(), sorted);
+        recyclerView.setAdapter(c);
     }
 }

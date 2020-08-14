@@ -1,5 +1,6 @@
 package com.zone.app.utils;
 
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.function.BiFunction;
 
@@ -180,6 +181,31 @@ public class AVLtree<V> {
         return node;
     }
 
+    public ArrayList<V> toArrayList() {
+        return toArrayList(root);
+    }
+
+    private ArrayList<V> toArrayList(Node<V> iterator) {
+        ArrayList<V> list = new ArrayList<>();
+
+        Stack<Node<V>> s = new Stack<>();
+
+        while (iterator != null || s.size() > 0) {
+
+            while (iterator != null) {
+                s.push(iterator);
+                iterator = iterator.getLeft();
+            }
+
+            iterator = s.pop();
+
+            list.add(iterator.getVal());
+
+            iterator = iterator.getRight();
+        }
+
+        return list;
+    }
 
     public int size() {
         return sizeOfTree(root);
