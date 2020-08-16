@@ -110,6 +110,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private LinearLayout root;
     private ImageView im;
     private int currentID = -1;
+    private TextView profileName;
 
     public MapActivity() {
     }
@@ -142,6 +143,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         root = view.findViewById(R.id.listAtribues);
         im = view.findViewById(R.id.profilePicImg);
         profileComp = view.findViewById(R.id.profileComp);
+        profileName = view.findViewById(R.id.profileName);
+
         constructINTERFACE();
         ImageView btnOpen = view.findViewById(R.id.openProfle);
         btnOpen.setOnClickListener(view -> {
@@ -150,10 +153,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             Intent intent = new Intent(getContext(), PrevizFirmProfile.class);
             intent.putExtra("ID", currentID);
 
-            Pair[] pairs = new Pair[3];
-            pairs[0] = new Pair<View, String>(im,"imgTransformTo");
-            pairs[1] = new Pair<View, String>(profileComp, "bgTransformTo");
-            pairs[2] = new Pair<View, String>(btnOpen,"backTransformTo");
+            Pair[] pairs = new Pair[1];
+            pairs[0] = new Pair<View, String>(btnOpen,"backTransformTo");
 
             ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),pairs);
 
@@ -249,8 +250,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
                     Picasso.get().load(locations.get(i).getPath()).placeholder(R.drawable.nopic).into(im);
 
-                    TextView t = view.findViewById(R.id.profileName);
-                    t.setText(locations.get(i).getName());
+                    profileName.setText(locations.get(i).getName());
 
                     root.removeAllViews();
                     for (int j = 0; j < locations.get(i).getAtributes().length; j++) {
@@ -464,7 +464,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private static void constructLocations(Context c){
         for (int i = 0; i < locations.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(locations.get(i).getLat(), locations.get(i).getLng()))
-                    .icon(bitmapDescriptorFromVector(c, R.drawable.ic_baseline_apartment_24, 100,100))
+                    .icon(bitmapDescriptorFromVector(c, R.drawable.ic_baseline_local_bar_24, 100,100))
                     .snippet(locations.get(i).getTAG());
             map.addMarker(markerOptions);
         }
