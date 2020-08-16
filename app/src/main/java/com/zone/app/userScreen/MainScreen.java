@@ -1,5 +1,6 @@
 package com.zone.app.userScreen;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -82,6 +84,11 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback 
                     MapActivity.getMap().getUiSettings().setScrollGesturesEnabled(true);
                 }
             }
+        });
+        viewPager.setPageTransformer(false, (page, position) -> {
+//            final float normalizedposition = Math.abs(Math.abs(position) - 1);
+//            page.setScaleX(normalizedposition / 2 + 0.5f);
+//            page.setScaleY(normalizedposition / 2 + 0.5f);
         });
 
         client = LocationServices.getFusedLocationProviderClient(this);

@@ -108,7 +108,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,13 +116,13 @@
         app:layout_constraintVertical_bias="1.0">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#f1f1f1"
-            app:cardCornerRadius="5dp"
+            android:transitionName="bgTransformTo"
+            app:cardBackgroundColor="#fff"
+            app:cardCornerRadius="10dp"
             app:cardElevation="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -132,99 +132,82 @@
             app:layout_constraintWidth_percent="0.9">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profileComp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:minHeight="150dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorPrimary"
-                    android:elevation="1dp"
-                    app:layout_constraintBottom_toTopOf="@+id/listAtribues"
+                <ImageView
+                    android:id="@+id/profilePicImg"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:elevation="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/nopic"
+                    android:transitionName="imgTransformTo"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintWidth_percent="0.35" />
 
                 <TextView
                     android:id="@+id/profileName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
                     android:elevation="21dp"
-                    android:gravity="center_horizontal"
                     android:text="Numele Firmei"
-                    android:textColor="#fff"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/openProfle"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/profilePicImg"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:layout_constraintWidth_percent="0.8" />
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <LinearLayout
                     android:id="@+id/listAtribues"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/profilePicImg"
                     app:layout_constraintTop_toBottomOf="@+id/profileName"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:layout_constraintWidth_percent="0.8" />
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <ImageView
                     android:id="@+id/openProfle"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
                     android:background="@drawable/circle"
-                    android:backgroundTint="#fff"
+                    android:backgroundTint="@color/colorPrimary"
                     android:elevation="11dp"
-                    android:src="@drawable/ic_keyboard_arrow_up_black_24dp"
-                    android:tint="@color/colorPrimary"
-                    app:layout_constraintBottom_toTopOf="@+id/profileName"
+                    android:src="@drawable/ic_baseline_chevron_right_24"
+                    android:tint="#fff"
+                    android:transitionName="backTransformTo"
+                    app:layout_constraintBottom_toBottomOf="@+id/profileName"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/profileName"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/colorPrimary">
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/profilePicImg"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/circle"
-            android:backgroundTint="@color/colorPrimary"
-            android:elevation="10dp"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/nopic_round"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

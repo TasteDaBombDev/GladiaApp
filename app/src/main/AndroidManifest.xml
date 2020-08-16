@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
         android:allowBackup="true"
@@ -17,26 +17,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.zone.app.userScreen.profile.friends.FriendsActivity" />
-        <activity android:name="com.zone.app.register.termsAndConditions.TermsAndConditionsMain" />
-        <activity android:name="com.zone.app.userScreen.profile.EditProfile" />
-        <activity android:name="com.zone.app.Login" />
-        <activity android:name="com.zone.app.SplashScreen">
+        <activity android:name=".PrevizFirmProfile"></activity>
+        <activity android:name=".userScreen.profile.friends.FriendsActivity" />
+        <activity android:name=".register.termsAndConditions.TermsAndConditionsMain" />
+        <activity android:name=".userScreen.profile.EditProfile" />
+        <activity android:name=".Login" />
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.zone.app.register.Register" />
+        <activity android:name=".register.Register" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
-        <activity android:name="com.zone.app.userScreen.MainScreen" />
-        <activity android:name="com.zone.app.MainActivity" />
-        <activity android:name="com.zone.app.register.RegisterMainScreen" />
+        <activity android:name=".userScreen.MainScreen" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".register.RegisterMainScreen" />
     </application>
 
 </manifest>

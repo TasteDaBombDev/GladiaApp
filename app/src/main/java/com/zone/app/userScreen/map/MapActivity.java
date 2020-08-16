@@ -13,11 +13,14 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.ZygotePreload;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -27,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.transition.TransitionManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,9 +59,11 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.zone.app.Login;
+import com.zone.app.PrevizFirmProfile;
 import com.zone.app.R;
 //import com.google.android.gms.location.FusedLocationProviderClient;
 //import com.google.android.gms.location.LocationServices;
+import com.zone.app.SplashScreen;
 import com.zone.app.userScreen.Evenimente.Evenimente;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -99,9 +105,11 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private static LatLng me;
     private static boolean stillInfo = false;
     private static final int ZOOM = 15;
-    private ConstraintLayout profile, rootMain;
+    private ConstraintLayout profile, rootMain, profileComp;
     private boolean isOpened = false;
     private LinearLayout root;
+    private ImageView im;
+    private int currentID = -1;
 
     public MapActivity() {
     }
@@ -132,30 +140,46 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         profile = view.findViewById(R.id.profile);
         rootMain = view.findViewById(R.id.root);
         root = view.findViewById(R.id.listAtribues);
+        im = view.findViewById(R.id.profilePicImg);
+        profileComp = view.findViewById(R.id.profileComp);
         constructINTERFACE();
         ImageView btnOpen = view.findViewById(R.id.openProfle);
         btnOpen.setOnClickListener(view -> {
 
-            TransitionManager.beginDelayedTransition(rootMain);
-            if(!isOpened){
-                ConstraintSet set = new ConstraintSet();
-                set.clone(rootMain);
-                set.setVerticalBias(R.id.profile, 0.0f);
-                set.applyTo(rootMain);
-                isOpened = true;
-                btnOpen.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
-                root.setVisibility(View.GONE);
-                map.getUiSettings().setAllGesturesEnabled(false);
-            } else {
-                ConstraintSet set = new ConstraintSet();
-                set.clone(rootMain);
-                set.setVerticalBias(R.id.profile, 1.0f);
-                set.applyTo(rootMain);
-                isOpened = false;
-                btnOpen.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
-                root.setVisibility(View.VISIBLE);
-                map.getUiSettings().setAllGesturesEnabled(true);
-            }
+
+            Intent intent = new Intent(getContext(), PrevizFirmProfile.class);
+            intent.putExtra("ID", currentID);
+
+            Pair[] pairs = new Pair[3];
+            pairs[0] = new Pair<View, String>(im,"imgTransformTo");
+            pairs[1] = new Pair<View, String>(profileComp, "bgTransformTo");
+            pairs[2] = new Pair<View, String>(btnOpen,"backTransformTo");
+
+            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),pairs);
+
+            getActivity().startActivityFromFragment(MapActivity.this, intent, 1000, activityOptions.toBundle());
+
+
+//            TransitionManager.beginDelayedTransition(rootMain);
+//            if(!isOpened){
+//                ConstraintSet set = new ConstraintSet();
+//                set.clone(rootMain);
+//                set.setVerticalBias(R.id.profile, 0.0f);
+//                set.applyTo(rootMain);
+//                isOpened = true;
+//                btnOpen.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+//                root.setVisibility(View.GONE);
+//                map.getUiSettings().setAllGesturesEnabled(false);
+//            } else {
+//                ConstraintSet set = new ConstraintSet();
+//                set.clone(rootMain);
+//                set.setVerticalBias(R.id.profile, 1.0f);
+//                set.applyTo(rootMain);
+//                isOpened = false;
+//                btnOpen.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+//                root.setVisibility(View.VISIBLE);
+//                map.getUiSettings().setAllGesturesEnabled(true);
+//            }
         });
 
 
@@ -218,24 +242,12 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
             for (int i = 0; i < locations.size(); i++) {
                 if(marker.getSnippet().equals(locations.get(i).getTAG()) && !locations.get(i).isOpened()){
+                    currentID = locations.get(i).getId();
+
                     locations.get(i).setOpened(true);
                     profile.setVisibility(View.VISIBLE);
 
-                    ImageView im = view.findViewById(R.id.profilePicImg);
-                    Picasso.get().load(locations.get(i).getPath()).placeholder(R.drawable.nopic_round).into(im, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            Bitmap imageBitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
-                            RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
-                            imageDrawable.setCircular(true);
-                            im.setImageDrawable(imageDrawable);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    });
+                    Picasso.get().load(locations.get(i).getPath()).placeholder(R.drawable.nopic).into(im);
 
                     TextView t = view.findViewById(R.id.profileName);
                     t.setText(locations.get(i).getName());
