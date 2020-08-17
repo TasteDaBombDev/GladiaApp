@@ -528,8 +528,6 @@ public class Profile extends Fragment {
 
         headerProfile = view.findViewById(R.id.headerProfile);
 
-        Toast.makeText(getContext(), "" + headerProfile.getHeight(),Toast.LENGTH_SHORT).show();
-
         header = view.findViewById(R.id.headerMenu);
         contentMenu = view.findViewById(R.id.menuContent);
     }

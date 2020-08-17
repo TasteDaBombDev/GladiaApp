@@ -3,34 +3,21 @@ package com.zone.app.userScreen.map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityOptions;
-import android.app.ZygotePreload;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.transition.TransitionManager;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,28 +32,16 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.zone.app.Login;
-import com.zone.app.PrevizFirmProfile;
+import com.zone.app.userScreen.previzFirmProfile.PrevizFirmProfile;
 import com.zone.app.R;
 //import com.google.android.gms.location.FusedLocationProviderClient;
 //import com.google.android.gms.location.LocationServices;
-import com.zone.app.SplashScreen;
-import com.zone.app.userScreen.Evenimente.Evenimente;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -76,10 +51,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.zone.app.userScreen.MainScreen;
-import com.zone.app.utils.EventsDetails;
 import com.zone.app.utils.LocationInfo;
 
 import org.json.JSONException;
@@ -89,14 +60,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.content.Context.LOCATION_SERVICE;
-
 public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     private static MapActivity INSTANCE = null;
 
     private View view;
+    private static boolean firstTime = true;
+    private static Marker thisIsMe;
 
     private static GoogleMap map;
     private static ArrayList<LocationInfo> locations = new ArrayList<>();
@@ -144,6 +114,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         im = view.findViewById(R.id.profilePicImg);
         profileComp = view.findViewById(R.id.profileComp);
         profileName = view.findViewById(R.id.profileName);
+        profile.setVisibility(View.GONE);
 
         constructINTERFACE();
         ImageView btnOpen = view.findViewById(R.id.openProfle);
@@ -153,12 +124,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             Intent intent = new Intent(getContext(), PrevizFirmProfile.class);
             intent.putExtra("ID", currentID);
 
-            Pair[] pairs = new Pair[1];
-            pairs[0] = new Pair<View, String>(btnOpen,"backTransformTo");
-
-            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),pairs);
-
-            getActivity().startActivityFromFragment(MapActivity.this, intent, 1000, activityOptions.toBundle());
+            startActivity(intent);
 
 
 //            TransitionManager.beginDelayedTransition(rootMain);
@@ -212,7 +178,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         if(stillInfo){
             if(me != null){
-
                 MarkerOptions markerOptions = new MarkerOptions().title("me").snippet("")
                         .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100,100));
                 markerOptions.position(me);
@@ -220,7 +185,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 map.animateCamera(CameraUpdateFactory.newLatLng(me));
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
 
-                map.addMarker(markerOptions);
+                thisIsMe = map.addMarker(markerOptions);
 
                 runServer(getContext());
             } else {
@@ -232,7 +197,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                     map.animateCamera(CameraUpdateFactory.newLatLng(me));
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
 
-                    map.addMarker(markerOptions);
+                    thisIsMe = map.addMarker(markerOptions);
 
                     runServer(getContext());
                 }, 1000);
@@ -259,6 +224,12 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                         p.setPadding(0,10,0,0);
                         root.addView(p);
                     }
+                    for (int j = 0; j < 5; j++) {
+                        TextView p = new TextView(getContext());
+                        p.setText("bla bla bla");
+                        p.setPadding(0,10,0,0);
+                        root.addView(p);
+                    }
                 } else {
                     locations.get(i).setOpened(false);
                     profile.setVisibility(View.GONE);
@@ -277,22 +248,20 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     }
 
     public static void localize(Context c, double lat, double lng){
-            me = new LatLng(lat, lng);
+        me = new LatLng(lat, lng);
 
-            if(map != null){
-                stillInfo = false;
-                MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
-                        .icon(bitmapDescriptorFromVector(c, R.drawable.location, 100,100));
+        if(map != null){
+            stillInfo = false;
+            MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
+                    .icon(bitmapDescriptorFromVector(c, R.drawable.location, 100,100));
 
-                map.animateCamera(CameraUpdateFactory.newLatLng(me));
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
+            map.animateCamera(CameraUpdateFactory.newLatLng(me));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
 
-                map.addMarker(markerOptions);
+            thisIsMe = map.addMarker(markerOptions);
 
-                runServer(c);
-            } else stillInfo = true;
-
-
+            runServer(c);
+        } else stillInfo = true;
     }
 
     private static BitmapDescriptor bitmapDescriptorFromVector(Context c, int vectorResource, int width, int height){

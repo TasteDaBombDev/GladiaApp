@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PrevizFirmProfile"></activity>
+        <activity android:name=".userScreen.AccurracyChanger"></activity>
+        <activity android:name=".userScreen.previzFirmProfile.PrevizFirmProfile" />
         <activity android:name=".userScreen.profile.friends.FriendsActivity" />
         <activity android:name=".register.termsAndConditions.TermsAndConditionsMain" />
         <activity android:name=".userScreen.profile.EditProfile" />

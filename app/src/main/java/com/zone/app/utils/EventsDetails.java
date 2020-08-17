@@ -10,6 +10,7 @@ public class EventsDetails {
     private String type;
     private String poza;
     private double distance;
+    private String location;
 
     public EventsDetails(int order, double distance, int ID, String poza, String name, String date, String ora, String type) {
         this.order = order;
@@ -20,6 +21,22 @@ public class EventsDetails {
         this.date = date;
         this.ora = ora;
         this.type = type;
+    }
+
+    public EventsDetails(String name, String ora, String type, String poza, String location) {
+        this.name = name;
+        this.ora = ora;
+        this.type = type;
+        this.poza = poza;
+        this.location = location;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public double getDistance() {

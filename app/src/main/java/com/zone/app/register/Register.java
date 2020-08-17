@@ -41,56 +41,52 @@ public class Register extends AppCompatActivity {
         //register
 
 
-        Response.Listener<String> responseListener = new Response.Listener<String>(){
+        Response.Listener<String> responseListener = response -> {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                String message = jsonObject.getString("msg");
+                String username = jsonObject.getString("username");
+                int userID = jsonObject.getInt("userID");
 
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    boolean success = jsonObject.getBoolean("success");
-                    String message = jsonObject.getString("msg");
-                    String username = jsonObject.getString("username");
-                    int userID = jsonObject.getInt("userID");
+                String nume = jsonObject.getString("nume");
+                String prenume = jsonObject.getString("prenume");
+                String password = jsonObject.getString("password");
+                String mail = jsonObject.getString("mail");
+                String ziuaDeNastere = jsonObject.getString("ziuaDeNastere");
+                String sex = jsonObject.getString("sex");
+                String nrtel = jsonObject.getString("nrtel");
 
-                    String nume = jsonObject.getString("nume");
-                    String prenume = jsonObject.getString("prenume");
-                    String password = jsonObject.getString("password");
-                    String mail = jsonObject.getString("mail");
-                    String ziuaDeNastere = jsonObject.getString("ziuaDeNastere");
-                    String sex = jsonObject.getString("sex");
-                    String nrtel = jsonObject.getString("nrtel");
+                if(success){
 
-                    if(success){
+                    createFile();
 
-                        createFile();
+                    Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Register.this, MainScreen.class);
+                    intent.putExtra("idUser", userID);
+                    intent.putExtra("username",username);
 
-                        Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Register.this, MainScreen.class);
-                        intent.putExtra("idUser", userID);
-                        intent.putExtra("username",username);
+                    intent.putExtra("nume", nume);
+                    intent.putExtra("prenume", prenume);
+                    intent.putExtra("password", password);
+                    intent.putExtra("mail", mail);
+                    intent.putExtra("ziuaDeNastere", ziuaDeNastere);
+                    intent.putExtra("sex", sex);
+                    intent.putExtra("nrtel", nrtel);
+                    intent.putExtra("pannel",2);
+                    intent.putExtra("fromRegister", true);
 
-                        intent.putExtra("nume", nume);
-                        intent.putExtra("prenume", prenume);
-                        intent.putExtra("password", password);
-                        intent.putExtra("mail", mail);
-                        intent.putExtra("ziuaDeNastere", ziuaDeNastere);
-                        intent.putExtra("sex", sex);
-                        intent.putExtra("nrtel", nrtel);
-                        intent.putExtra("pannel",2);
-                        intent.putExtra("fromRegister", true);
-
-                        startActivity(intent);
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-
-                    }
-                } catch (JSONException e) {
-                    Toast.makeText(getApplicationContext(),"JSON_err",Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
+                    startActivity(intent);
                 }
+                else{
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(),"JSON_err",Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
+
         };
 
         ServerRequest serverRequest = new ServerRequest(username,nume,prenume,pass,login,date,"http://gladiaholdings.com/PHP/register.php",responseListener);

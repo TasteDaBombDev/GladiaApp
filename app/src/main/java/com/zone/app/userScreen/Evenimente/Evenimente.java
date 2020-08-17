@@ -88,8 +88,6 @@ public class Evenimente extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.events,container,false);
         init();
-        StaggeredGridLayoutManager managerListing = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(managerListing);
 //
 //        ArrayList<String> personNames = new ArrayList<>();
 //        personNames.add("Nume1");
@@ -180,7 +178,7 @@ public class Evenimente extends Fragment {
         StringRequest stringRequest =  new StringRequest(Request.Method.POST, urlUpload, response -> {
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                for (int i = 0; i < jsonObject.length() / 7; i++) {
+                for (int i = 0; i < (jsonObject.length() - 1) / 7; i++) {
                     database.addVal(new EventsDetails(i,
                             jsonObject.getDouble("distance" + i),
                             jsonObject.getInt("id" + i),
@@ -190,8 +188,8 @@ public class Evenimente extends Fragment {
                             jsonObject.getString("hours" + i),
                             jsonObject.getString("type" + i)));
                 }
-                Log.e("asklda", "lahsdlahdkasda--------------sadfasf" + database.size() + " " + jsonObject.length());
-                Log.e("asjkdhakshdasd", "" + jsonObject.toString());
+                StaggeredGridLayoutManager managerListing = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(managerListing);
                 CustomAdapter customAdapter = new CustomAdapter(c, database);
                 recyclerView.setAdapter(customAdapter);
             } catch (JSONException e) {

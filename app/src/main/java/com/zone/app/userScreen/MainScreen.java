@@ -6,7 +6,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,12 +33,15 @@ import com.zone.app.userScreen.map.MapActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MainScreen extends AppCompatActivity implements OnMapReadyCallback {
+public class MainScreen extends AppCompatActivity implements OnMapReadyCallback, SensorEventListener {
 
     private static String username;
     private ViewPager viewPager;
     private FusedLocationProviderClient client;
     private LocationRequest locationRequest;
+    private SensorManager sm;
+    private Sensor rotationvector;
+    private Boolean firstTime = true;
 
     private static int userID, afaceri, events, friends;
     private static boolean tutorial;
@@ -53,11 +62,6 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback 
         getUserData();
 
         viewPager = findViewById(R.id.mainSlider);
-
-        EnumFragments enumFragments = new EnumFragments(getSupportFragmentManager(), this);
-        viewPager.setAdapter(enumFragments);
-        viewPager.setCurrentItem(1);
-        viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             private boolean scrollStarted = false;
@@ -92,6 +96,10 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback 
         });
 
         client = LocationServices.getFusedLocationProviderClient(this);
+
+        sm=(SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        rotationvector=sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        sm.registerListener(this,rotationvector,SensorManager.SENSOR_DELAY_NORMAL);
 
         getLocation();
 
@@ -202,9 +210,10 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback 
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
                         super.onLocationResult(locationResult);
-
-                        locationResult = null;
-                        MapActivity.localize(MainScreen.this, locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
+                        if(firstTime) {
+                            firstTime = false;
+                            MapActivity.localize(MainScreen.this, locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
+                        }
                     }
                 }, getMainLooper());
             }
@@ -218,5 +227,25 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        if(i == SensorManager.SENSOR_STATUS_ACCURACY_LOW){
+            Intent intent = new Intent(MainScreen.this, AccurracyChanger.class);
+            startActivity(intent);
+            Log.e("acyracy low", "intent");
+        } else {
+            EnumFragments enumFragments = new EnumFragments(getSupportFragmentManager(), this);
+            viewPager.setAdapter(enumFragments);
+            viewPager.setCurrentItem(1);
+            viewPager.setOffscreenPageLimit(3);
+            Log.e("acuracy big", "start interface");
+        }
     }
 }
