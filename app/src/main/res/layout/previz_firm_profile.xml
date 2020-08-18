@@ -129,7 +129,7 @@
                     android:id="@+id/rootTodayEvents"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/rootEvent1"
@@ -145,10 +145,10 @@
                             android:background="@drawable/circle"
                             android:backgroundTint="@color/colorPrimary"
                             android:elevation="20dp"
-                            android:paddingLeft="3dp"
-                            android:paddingTop="3dp"
-                            android:paddingRight="3dp"
-                            android:paddingBottom="3dp"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="5dp"
                             android:scaleType="centerCrop"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/cardView"
@@ -164,6 +164,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="50dp"
                             android:layout_marginBottom="10dp"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="10dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -238,7 +240,7 @@
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="3dp"
+                                android:layout_height="5dp"
                                 android:background="@color/colorPrimary">
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -248,37 +250,116 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textView16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:text="Evenimente urmatoare"
-                    android:textColor="#000"
-                    android:textSize="24sp" />
-
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/rootFutureEvents"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="270dp"
-                    android:overScrollMode="never" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/textView13"
-                    android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout4"
+                        android:layout_width="60dp"
+                        android:layout_height="0dp"
+                        android:background="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@+id/rootFutureEvents"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/constraintLayout3"
+                        app:layout_constraintVertical_bias="0.0">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout6"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="30dp"
+                        android:background="@drawable/background_profile"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/rootFutureEvents"
+                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout3"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:background="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@+id/rootFutureEvents"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textView16"
+                        app:layout_constraintVertical_bias="0.0">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:text="Evenimente urmatoare"
+                        android:textColor="#fff"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/rootFutureEvents"
+                        android:layout_width="match_parent"
+                        android:layout_height="270dp"
+                        android:overScrollMode="never"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView16"
+                        app:layout_constraintVertical_bias="0.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:text="Detalii locatie"
-                    android:textColor="#000"
-                    android:textSize="24sp" />
+                    android:background="@color/colorPrimary">
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="20dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="Detalii locatie"
+                        android:textColor="#fff"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="320px"
+                    android:background="@drawable/ic_wave">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="-300px">
 
                     <Space
                         android:id="@+id/space1"
@@ -293,7 +374,7 @@
                         android:id="@+id/cardView2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="2dp"
+                        app:cardCornerRadius="10dp"
                         app:cardElevation="1dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -391,7 +472,7 @@
                         android:id="@+id/cardView3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="2dp"
+                        app:cardCornerRadius="10dp"
                         app:cardElevation="1dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -486,7 +567,7 @@
                         android:id="@+id/cardView4"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="2dp"
+                        app:cardCornerRadius="10dp"
                         app:cardElevation="1dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -581,7 +662,7 @@
                         android:id="@+id/cardView5"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="2dp"
+                        app:cardCornerRadius="10dp"
                         app:cardElevation="1dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -676,7 +757,7 @@
                         android:id="@+id/cardView6"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="2dp"
+                        app:cardCornerRadius="10dp"
                         app:cardElevation="1dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -771,7 +852,7 @@
                         android:id="@+id/cardView8"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="2dp"
+                        app:cardCornerRadius="10dp"
                         app:cardElevation="1dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -867,7 +948,7 @@
                         android:id="@+id/cardView9"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="2dp"
+                        app:cardCornerRadius="10dp"
                         app:cardElevation="1dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -995,35 +1076,3 @@
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-<!--    <ImageView-->
-<!--        android:id="@+id/profPic"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="270dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:transitionName="imgTransformTo"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.0"-->
-<!--        app:srcCompat="@drawable/nopic" />-->
-
-<!--    <ImageView-->
-<!--        android:id="@+id/back"-->
-<!--        android:layout_width="30dp"-->
-<!--        android:layout_height="30dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:background="@drawable/circle"-->
-<!--        android:backgroundTint="@color/colorPrimary"-->
-<!--        android:elevation="20dp"-->
-<!--        android:tint="#fff"-->
-<!--        android:transitionName="backTransformTo"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="1.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.0"-->
-<!--        app:srcCompat="@drawable/ic_close_black_24dp" />-->
