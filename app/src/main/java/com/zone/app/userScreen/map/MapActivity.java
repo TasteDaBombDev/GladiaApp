@@ -3,18 +3,23 @@ package com.zone.app.userScreen.map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -25,6 +30,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +59,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.zone.app.utils.LocationInfo;
+import com.zone.app.utils.LocationTrack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,10 +75,13 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private View view;
     private static boolean firstTime = true;
     private static Marker thisIsMe;
+    private ListView results;
+    private SearchView search;
+    private boolean openedSearch = false;
 
     private static GoogleMap map;
     private static ArrayList<LocationInfo> locations = new ArrayList<>();
-    private MapView mapView;
+    private static MapView mapView;
     private static final int REQUEST_CODE = 101;
     private static LatLng me;
     private static boolean stillInfo = false;
@@ -115,6 +126,24 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         profileComp = view.findViewById(R.id.profileComp);
         profileName = view.findViewById(R.id.profileName);
         profile.setVisibility(View.GONE);
+
+        results = view.findViewById(R.id.resultsMap);
+        search = view.findViewById(R.id.search);
+
+        search.setOnSearchClickListener(view -> {
+            ConstraintSet set = new ConstraintSet();
+            set.clone(rootMain);
+            if (!openedSearch) {
+                set.constrainPercentHeight(R.id.resultsMap, 1.0f);
+                set.applyTo(rootMain);
+                openedSearch = true;
+                Log.e("asd", "pressed");
+            } else {
+                set.constrainPercentHeight(R.id.resultsMap, 0);
+                set.applyTo(rootMain);
+                openedSearch = false;
+            }
+        });
 
         constructINTERFACE();
         ImageView btnOpen = view.findViewById(R.id.openProfle);
@@ -176,33 +205,58 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
         map.getUiSettings().setMapToolbarEnabled(false);
 
-        if(stillInfo){
-            if(me != null){
-                MarkerOptions markerOptions = new MarkerOptions().title("me").snippet("")
-                        .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100,100));
-                markerOptions.position(me);
+        LocationTrack locationTrack = new LocationTrack(getContext());
 
-                map.animateCamera(CameraUpdateFactory.newLatLng(me));
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
 
-                thisIsMe = map.addMarker(markerOptions);
+        if (locationTrack.canGetLocation()) {
 
-                runServer(getContext());
-            } else {
-                new Handler().postDelayed(() -> {
-                    MarkerOptions markerOptions = new MarkerOptions().title("me").snippet("")
-                            .icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_baseline_location_on_24, 100,100));
-                    markerOptions.position(me);
 
-                    map.animateCamera(CameraUpdateFactory.newLatLng(me));
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
+            double longitude = locationTrack.getLongitude();
+            double latitude = locationTrack.getLatitude();
 
-                    thisIsMe = map.addMarker(markerOptions);
+            LatLng me2 = new LatLng(latitude, longitude);
 
-                    runServer(getContext());
-                }, 1000);
-            }
+            stillInfo = false;
+            MarkerOptions markerOptions = new MarkerOptions().position(me2).title("me").snippet("")
+                    .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100,100));
+
+            map.animateCamera(CameraUpdateFactory.newLatLng(me2));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(me2, ZOOM));
+
+            thisIsMe = map.addMarker(markerOptions);
+
+        } else {
+
+            locationTrack.showSettingsAlert();
         }
+
+//        if(stillInfo){
+//            if(me != null){
+//                MarkerOptions markerOptions = new MarkerOptions().title("me").snippet("")
+//                        .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100,100));
+//                markerOptions.position(me);
+//
+//                map.animateCamera(CameraUpdateFactory.newLatLng(me));
+//                map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
+//
+//                thisIsMe = map.addMarker(markerOptions);
+//
+//                runServer(getContext());
+//            } else {
+//                new Handler().postDelayed(() -> {
+//                    MarkerOptions markerOptions = new MarkerOptions().title("me").snippet("")
+//                            .icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_baseline_location_on_24, 100,100));
+//                    markerOptions.position(me);
+//
+//                    map.animateCamera(CameraUpdateFactory.newLatLng(me));
+//                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
+//
+//                    thisIsMe = map.addMarker(markerOptions);
+//
+//                    runServer(getContext());
+//                }, 1000);
+//            }
+//        }
 
         googleMap.setOnMarkerClickListener(marker -> {
 
@@ -248,20 +302,20 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     }
 
     public static void localize(Context c, double lat, double lng){
-        me = new LatLng(lat, lng);
-
-        if(map != null){
-            stillInfo = false;
-            MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
-                    .icon(bitmapDescriptorFromVector(c, R.drawable.location, 100,100));
-
-            map.animateCamera(CameraUpdateFactory.newLatLng(me));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
-
-            thisIsMe = map.addMarker(markerOptions);
-
-            runServer(c);
-        } else stillInfo = true;
+//        me = new LatLng(lat, lng);
+//
+//        if(map != null){
+//            stillInfo = false;
+//            MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
+//                    .icon(bitmapDescriptorFromVector(c, R.drawable.location, 100,100));
+//
+//            map.animateCamera(CameraUpdateFactory.newLatLng(me));
+//            map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
+//
+//            thisIsMe = map.addMarker(markerOptions);
+//
+//            runServer(c);
+//        } else stillInfo = true;
     }
 
     private static BitmapDescriptor bitmapDescriptorFromVector(Context c, int vectorResource, int width, int height){
@@ -437,5 +491,9 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                     .snippet(locations.get(i).getTAG());
             map.addMarker(markerOptions);
         }
+    }
+
+    public static MapView getMapView() {
+        return mapView;
     }
 }

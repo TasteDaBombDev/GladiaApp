@@ -180,45 +180,45 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback,
         //Nothing
     }
 
-    public void getLocation() {
-        requestPermission();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-
-        client.getLastLocation().addOnSuccessListener(MainScreen.this, location -> {
-            if(location != null) {
-                MapActivity.localize(MainScreen.this, location.getLatitude(), location.getLongitude());
-                Evenimente.setEventsNearMe(MainScreen.this, location.getLatitude(), location.getLongitude());
-            } else {
-                locationRequest = new LocationRequest();
-                locationRequest
-                        .setFastestInterval(2000)
-                        .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                        .setInterval(4000);
-
-
-                requestPermission();
-
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-
-                client.requestLocationUpdates(locationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        super.onLocationResult(locationResult);
-                        if(firstTime) {
-                            firstTime = false;
-                            MapActivity.localize(MainScreen.this, locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
-                        }
-                    }
-                }, getMainLooper());
-            }
-        });
-    }
+//    public void getLocation() {
+//        requestPermission();
+//
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            return;
+//        }
+//
+//        client.getLastLocation().addOnSuccessListener(MainScreen.this, location -> {
+//            if(location != null) {
+//                MapActivity.localize(MainScreen.this, location.getLatitude(), location.getLongitude());
+//                Evenimente.setEventsNearMe(MainScreen.this, location.getLatitude(), location.getLongitude());
+//            } else {
+//                locationRequest = new LocationRequest();
+//                locationRequest
+//                        .setFastestInterval(2000)
+//                        .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+//                        .setInterval(4000);
+//
+//
+//                requestPermission();
+//
+//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                    return;
+//                }
+//
+//                client.requestLocationUpdates(locationRequest, new LocationCallback() {
+//                    @Override
+//                    public void onLocationResult(LocationResult locationResult) {
+//                        super.onLocationResult(locationResult);
+//                        if(firstTime) {
+//                            firstTime = false;
+//                            MapActivity.localize(MainScreen.this, locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
+//                        }
+//                    }
+//                }, getMainLooper());
+//            }
+//        });
+//    }
 
     private void requestPermission(){
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
@@ -236,7 +236,7 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-        if(i == SensorManager.SENSOR_STATUS_ACCURACY_LOW){
+        if(i == SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM){
             Intent intent = new Intent(MainScreen.this, AccurracyChanger.class);
             startActivity(intent);
             Log.e("acyracy low", "intent");
