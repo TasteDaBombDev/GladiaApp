@@ -101,7 +101,7 @@ public class MainScreen extends AppCompatActivity implements OnMapReadyCallback,
         rotationvector=sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         sm.registerListener(this,rotationvector,SensorManager.SENSOR_DELAY_NORMAL);
 
-        getLocation();
+//        getLocation();
 
     }
 

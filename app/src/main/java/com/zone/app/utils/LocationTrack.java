@@ -1,6 +1,7 @@
 package com.zone.app.utils;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -17,10 +18,13 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 
 public class LocationTrack extends Service implements LocationListener {
 
     private final Context mContext;
+    private Activity activity;
 
 
     boolean checkGPS = false;
@@ -41,8 +45,9 @@ public class LocationTrack extends Service implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     protected LocationManager locationManager;
 
-    public LocationTrack(Context mContext) {
+    public LocationTrack(Context mContext, Activity activity) {
         this.mContext = mContext;
+        this.activity = activity;
         getLocation();
     }
 
@@ -61,12 +66,14 @@ public class LocationTrack extends Service implements LocationListener {
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (!checkGPS && !checkNetwork) {
-                Toast.makeText(mContext, "No Service Provider is available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Nu ai deschisa locatia!", Toast.LENGTH_SHORT).show();
             } else {
                 this.canGetLocation = true;
 
                 // if GPS Enabled get lat/long using GPS Services
                 if (checkGPS) {
+
+                    requestPermission();
 
                     if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
@@ -155,24 +162,18 @@ public class LocationTrack extends Service implements LocationListener {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
 
-        alertDialog.setTitle("GPS is not Enabled!");
+        alertDialog.setTitle("Nu ai deschis locatia!");
 
-        alertDialog.setMessage("Do you want to turn on GPS?");
+        alertDialog.setMessage("Vrei sa pornesti locatia?");
 
 
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
-            }
+        alertDialog.setPositiveButton("Da", (dialog, which) -> {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mContext.startActivity(intent);
         });
 
 
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alertDialog.setNegativeButton("Nu", (dialog, which) -> dialog.cancel());
 
 
         alertDialog.show();
@@ -219,5 +220,9 @@ public class LocationTrack extends Service implements LocationListener {
     @Override
     public void onProviderDisabled(String s) {
 
+    }
+
+    private void requestPermission(){
+        ActivityCompat.requestPermissions(activity,new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 }
