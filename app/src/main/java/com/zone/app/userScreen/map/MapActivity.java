@@ -96,10 +96,10 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private static final int ZOOM = 15;
     private ConstraintLayout profile, rootMain, profileComp, searchCanvas;
     private LinearLayout root, rootMore;
-    private ImageView im;
+    private ImageView im, btnOpen;
     private int currentID = -1;
     private TextView profileName;
-    private ImageButton accuracy, more, track;
+    private ImageButton accuracy, more, track, localizeMe;
 
     public MapActivity() {
     }
@@ -214,7 +214,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         });
 
         constructINTERFACE();
-        ImageView btnOpen = view.findViewById(R.id.openProfle);
+        btnOpen = view.findViewById(R.id.openProfle);
         btnOpen.setOnClickListener(view -> {
 
 
@@ -464,9 +464,9 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             return false;
         });
 
-        ImageButton imageButton = view.findViewById(R.id.localizeMe);
+        localizeMe = view.findViewById(R.id.localizeMe);
 
-        imageButton.setOnClickListener(v -> {
+        localizeMe.setOnClickListener(v -> {
             if(me != null){
                 map.animateCamera(CameraUpdateFactory.newLatLng(me));
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(me,ZOOM));
