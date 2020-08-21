@@ -101,35 +101,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/localizeMe"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/circle"
-            android:backgroundTint="@color/colorPrimary"
-            android:src="@drawable/ic_baseline_my_location_24"
-            android:tint="#fff"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.98" />
-
-        <ImageButton
-            android:id="@+id/accuracy"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/circle"
-            android:backgroundTint="@color/colorPrimary"
-            android:src="@drawable/ic_baseline_not_listed_location_24"
-            android:tint="#fff"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.98" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -249,13 +220,136 @@
         android:id="@+id/searchCanvas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ListView
-            android:id="@+id/resultsMap"
+        <LinearLayout
+            android:id="@+id/rootMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/more"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/circle"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="Localizeaza-ma"
+                    android:textColor="#fff" />
+
+                <TextView
+                    android:id="@+id/textView23"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/circle"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="Calibreaza busola"
+                    android:textColor="#fff" />
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/circle"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="Live tracking"
+                    android:textColor="#fff" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/localizeMe"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/circle"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:src="@drawable/ic_baseline_my_location_24"
+                    android:tint="#fff" />
+
+                <ImageButton
+                    android:id="@+id/accuracy"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:src="@drawable/ic_baseline_not_listed_location_24"
+                    android:tint="#fff" />
+
+                <ImageButton
+                    android:id="@+id/track"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:src="@drawable/ic_baseline_track_changes_24"
+                    android:tint="#fff" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/more"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/circle"
+            android:backgroundTint="@color/colorPrimary"
+            android:src="@drawable/plus"
+            android:tint="#fff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/resultsBackground"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="#E3E1E1"
@@ -264,6 +358,20 @@
             app:layout_constraintHeight_percent="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ListView
+            android:id="@+id/resultsMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search"
             app:layout_constraintVertical_bias="1.0" />
 
         <SearchView

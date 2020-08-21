@@ -17,18 +17,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".userScreen.AccurracyChanger"></activity>
+        <activity android:name=".Checker">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".userScreen.AccurracyChanger" />
         <activity android:name=".userScreen.previzFirmProfile.PrevizFirmProfile" />
         <activity android:name=".userScreen.profile.friends.FriendsActivity" />
         <activity android:name=".register.termsAndConditions.TermsAndConditionsMain" />
         <activity android:name=".userScreen.profile.EditProfile" />
         <activity android:name=".Login" />
         <activity android:name=".SplashScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".register.Register" />
 

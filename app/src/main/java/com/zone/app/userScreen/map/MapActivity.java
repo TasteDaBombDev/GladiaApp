@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -28,6 +29,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +50,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Picasso;
 import com.zone.app.Login;
 import com.zone.app.userScreen.AccurracyChanger;
+import com.zone.app.userScreen.Evenimente.Evenimente;
 import com.zone.app.userScreen.previzFirmProfile.PrevizFirmProfile;
 import com.zone.app.R;
 //import com.google.android.gms.location.FusedLocationProviderClient;
@@ -69,6 +73,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MapActivity extends Fragment implements OnMapReadyCallback {
 
@@ -76,9 +82,12 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     private View view;
     private Marker thisIsMe = null;
+    private ArrayList<String> searches = new ArrayList<>();
     private ListView results;
     private SearchView search;
-    private boolean openedSearch = false;
+    private boolean overlay = true;
+    private boolean openMenu = false;
+    private boolean tracking = false;
 
     private static GoogleMap map;
     private static ArrayList<LocationInfo> locations = new ArrayList<>();
@@ -86,11 +95,11 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private static LatLng me;
     private static final int ZOOM = 15;
     private ConstraintLayout profile, rootMain, profileComp, searchCanvas;
-    private LinearLayout root;
+    private LinearLayout root, rootMore;
     private ImageView im;
     private int currentID = -1;
     private TextView profileName;
-    private ImageButton accuracy;
+    private ImageButton accuracy, more, track;
 
     public MapActivity() {
     }
@@ -130,6 +139,44 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         search = view.findViewById(R.id.search);
         searchCanvas = view.findViewById(R.id.searchCanvas);
 
+        rootMore = view.findViewById(R.id.rootMore);
+        more = view.findViewById(R.id.more);
+        track = view.findViewById(R.id.track);
+
+        track.setOnClickListener(view -> {
+            Handler handler = new Handler();
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    if(tracking){
+                        localiseWithoutMoving();
+                        handler.postDelayed(this, 6000);
+                    }
+                }
+            };
+            if(!tracking){
+                track.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.rubyred));
+                handler.postDelayed(run, 0);
+                tracking = true;
+            } else {
+                track.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimary));
+                tracking = false;
+            }
+        });
+
+        more.setOnClickListener(view -> {
+
+            TransitionManager.beginDelayedTransition(searchCanvas);
+
+            if(!openMenu){
+                rootMore.setVisibility(View.VISIBLE);
+                openMenu = true;
+            } else {
+                rootMore.setVisibility(View.GONE);
+                openMenu = false;
+            }
+        });
+
         accuracy = view.findViewById(R.id.accuracy);
 
         accuracy.setOnClickListener(view -> {
@@ -137,6 +184,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             startActivity(intent);
         });
 
+        results.setAdapter(new ArrayAdapter<>(getContext(), R.layout.text_search_result, R.id.txt, searches));
 
 
         search.setOnSearchClickListener(view -> {
@@ -146,6 +194,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             TransitionManager.beginDelayedTransition(searchCanvas);
 
             set2.constrainPercentHeight(R.id.resultsMap, 1.0f);
+            set2.constrainPercentHeight(R.id.resultsBackground, 1.0f);
             set2.setHorizontalBias(R.id.search, 0.5f);
             set2.applyTo(searchCanvas);
 
@@ -158,6 +207,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             TransitionManager.beginDelayedTransition(searchCanvas);
 
             set2.constrainPercentHeight(R.id.resultsMap, 0);
+            set2.constrainPercentHeight(R.id.resultsBackground, 0.0f);
             set2.setHorizontalBias(R.id.search, 0f);
             set2.applyTo(searchCanvas);
             return false;
@@ -173,27 +223,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
             startActivity(intent);
 
-
-//            TransitionManager.beginDelayedTransition(rootMain);
-//            if(!isOpened){
-//                ConstraintSet set = new ConstraintSet();
-//                set.clone(rootMain);
-//                set.setVerticalBias(R.id.profile, 0.0f);
-//                set.applyTo(rootMain);
-//                isOpened = true;
-//                btnOpen.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
-//                root.setVisibility(View.GONE);
-//                map.getUiSettings().setAllGesturesEnabled(false);
-//            } else {
-//                ConstraintSet set = new ConstraintSet();
-//                set.clone(rootMain);
-//                set.setVerticalBias(R.id.profile, 1.0f);
-//                set.applyTo(rootMain);
-//                isOpened = false;
-//                btnOpen.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
-//                root.setVisibility(View.VISIBLE);
-//                map.getUiSettings().setAllGesturesEnabled(true);
-//            }
         });
 
 
@@ -257,6 +286,17 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 }
             }
             return false;
+        });
+
+        googleMap.setOnMapClickListener(latLng -> {
+            TransitionManager.beginDelayedTransition(rootMain);
+            if(overlay){
+                searchCanvas.setVisibility(View.VISIBLE);
+                overlay = false;
+            } else {
+                searchCanvas.setVisibility(View.GONE);
+                overlay = true;
+            }
         });
 
     }
@@ -454,13 +494,61 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             double longitude = locationTrack.getLongitude();
             double latitude = locationTrack.getLatitude();
 
+            if(latitude == 0 && longitude == 0) {
+                LocationTrack locationTrack1 = new LocationTrack(getContext(), getActivity());
+
+                if (locationTrack1.canGetLocation()) {
+
+                    double longitude1 = locationTrack1.getLongitude();
+                    double latitude1 = locationTrack1.getLatitude();
+
+                    me = new LatLng(latitude1, longitude1);
+
+                    MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
+                            .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100, 100));
+
+                    map.animateCamera(CameraUpdateFactory.newLatLng(me));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
+
+                    thisIsMe = map.addMarker(markerOptions);
+
+                    runServer(getContext());
+
+                    return;
+                }
+            }
+
             me = new LatLng(latitude, longitude);
 
             MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
-                    .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100,100));
+                    .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100, 100));
 
             map.animateCamera(CameraUpdateFactory.newLatLng(me));
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
+
+            thisIsMe = map.addMarker(markerOptions);
+
+            runServer(getContext());
+
+            Evenimente.setEventsNearMe(getContext(), latitude, longitude);
+        }
+    }
+
+    private void localiseWithoutMoving(){
+        if(thisIsMe != null)
+            thisIsMe.remove();
+
+        LocationTrack locationTrack = new LocationTrack(getContext(), getActivity());
+
+        if (locationTrack.canGetLocation()) {
+
+            double longitude = locationTrack.getLongitude();
+            double latitude = locationTrack.getLatitude();
+
+            me = new LatLng(latitude, longitude);
+
+            MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
+                    .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100, 100));
 
             thisIsMe = map.addMarker(markerOptions);
 
