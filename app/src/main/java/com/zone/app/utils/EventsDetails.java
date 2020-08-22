@@ -12,8 +12,9 @@ public class EventsDetails {
     private double distance;
     private String location;
     private String muzica;
+    private String mbo;
 
-    public EventsDetails(int order, double distance, int ID, String poza, String name, String date, String ora, String type, String muzica) {
+    public EventsDetails(int order, double distance, int ID, String poza, String name, String date, String ora, String type, String muzica, String mbo) {
         this.order = order;
         this.distance = distance;
         this.ID = ID;
@@ -23,6 +24,7 @@ public class EventsDetails {
         this.ora = ora;
         this.type = type;
         this.muzica = muzica;
+        this.mbo = mbo;
     }
 
     public EventsDetails(String name, String ora, String type, String poza, String location) {
@@ -31,6 +33,14 @@ public class EventsDetails {
         this.type = type;
         this.poza = poza;
         this.location = location;
+    }
+
+    public String getMbo() {
+        return mbo;
+    }
+
+    public void setMbo(String mbo) {
+        this.mbo = mbo;
     }
 
     public String getMuzica() {

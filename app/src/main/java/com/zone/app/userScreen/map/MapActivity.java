@@ -551,8 +551,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                     .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100, 100));
 
             thisIsMe = map.addMarker(markerOptions);
-
-            runServer(getContext());
         }
     }
 }

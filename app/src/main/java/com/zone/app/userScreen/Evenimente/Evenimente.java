@@ -23,9 +23,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -61,6 +63,7 @@ public class Evenimente extends Fragment {
     private ArrayList<String> muzica = new ArrayList<>();
     private String date = "", oraS = "", oraE = "";
     private boolean filtersChanged = false;
+    private StringBuilder mbo = new StringBuilder("000");
 
     private static BiFunction<EventsDetails, EventsDetails, Integer> sortID = (a, b) -> {
         if(a.getID() < b.getID())
@@ -70,6 +73,7 @@ public class Evenimente extends Fragment {
     private static AVLtree<EventsDetails> database = new AVLtree<>(sortID);
 
     private ConstraintLayout header, root;
+    private Switch mancare, bautura, inauntru;
     private ConstraintLayout filters;
     private ImageButton filterBtn;
     private boolean filterOpen = false;
@@ -103,6 +107,18 @@ public class Evenimente extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.events,container,false);
         init();
+
+        mancare.setOnCheckedChangeListener((compoundButton, b) -> {
+            mbo.setCharAt(0,b ? '1' : '0');
+        });
+
+        bautura.setOnCheckedChangeListener((c,b) -> {
+            mbo.setCharAt(1,b ? '1' : '0');
+        });
+
+        inauntru.setOnCheckedChangeListener((c,b) -> {
+            mbo.setCharAt(2,b ? '1' : '0');
+        });
 
         boolean[] toggles = new boolean[muzicaRoot.getChildCount()];
         Arrays.fill(toggles, false);
@@ -260,7 +276,8 @@ public class Evenimente extends Fragment {
                             jsonObject.getString("date" + i),
                             jsonObject.getString("hours" + i),
                             jsonObject.getString("type" + i),
-                            jsonObject.getString("muzica" + i)));
+                            jsonObject.getString("muzica" + i),
+                            jsonObject.getString("mbo" + i)));
                 }
                 StaggeredGridLayoutManager managerListing = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(managerListing);
@@ -302,6 +319,9 @@ public class Evenimente extends Fragment {
         muzicaRoot = view.findViewById(R.id.musicRoot);
         oraEnd = view.findViewById(R.id.oraEnd);
         oraStart = view.findViewById(R.id.oraStart);
+        inauntru = view.findViewById(R.id.inauntru);
+        mancare = view.findViewById(R.id.mancare);
+        bautura = view.findViewById(R.id.bautura);
     }
 
     private void setFilters(){
@@ -321,7 +341,8 @@ public class Evenimente extends Fragment {
             if(unsorted.get(i).getDistance() <= myDistance
                     && isContaining(unsorted.get(i).getMuzica())
                     && isDate(unsorted.get(i).getDate())
-                    && isHour(unsorted.get(i).getOra())){
+                    && isHour(unsorted.get(i).getOra())
+                    && (filtersChanged || unsorted.get(i).getMbo().equals(mbo.toString()))){
                 sorted.addVal(unsorted.get(i));
             }
         }
