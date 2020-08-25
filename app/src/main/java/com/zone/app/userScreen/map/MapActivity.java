@@ -45,6 +45,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Picasso;
@@ -70,7 +71,9 @@ import com.zone.app.utils.LocationTrack;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -88,6 +91,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private boolean overlay = true;
     private boolean openMenu = false;
     private boolean tracking = false;
+    private static ArrayList<Marker> markers = new ArrayList<>();
 
     private static GoogleMap map;
     private static ArrayList<LocationInfo> locations = new ArrayList<>();
@@ -99,7 +103,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private ImageView im, btnOpen;
     private int currentID = -1;
     private TextView profileName;
-    private ImageButton accuracy, more, track, localizeMe;
+    private ImageButton accuracy, more, track, localizeMe, closeProfile;
 
     public MapActivity() {
     }
@@ -142,6 +146,11 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         rootMore = view.findViewById(R.id.rootMore);
         more = view.findViewById(R.id.more);
         track = view.findViewById(R.id.track);
+
+        closeProfile = view.findViewById(R.id.closeProfile);
+        closeProfile.setOnClickListener(view -> {
+            profile.setVisibility(View.GONE);
+        });
 
         track.setOnClickListener(view -> {
             Handler handler = new Handler();
@@ -252,15 +261,28 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
         map.getUiSettings().setMapToolbarEnabled(false);
 
-        localise();
+        for (int i = 0; i < 10; i++) {
+            localise();
+        }
+
+        MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
+                .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100, 100));
+
+        map.animateCamera(CameraUpdateFactory.newLatLng(me));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
+
+        thisIsMe = map.addMarker(markerOptions);
+
+        runServer(getContext());
+
+        Evenimente.setEventsNearMe(getContext(), me.latitude, me.longitude);
 
         googleMap.setOnMarkerClickListener(marker -> {
 
             for (int i = 0; i < locations.size(); i++) {
-                if(marker.getSnippet().equals(locations.get(i).getTAG()) && !locations.get(i).isOpened()){
+                if (marker.getSnippet().trim().equals(locations.get(i).getTAG().trim())) {
                     currentID = locations.get(i).getId();
 
-                    locations.get(i).setOpened(true);
                     profile.setVisibility(View.VISIBLE);
 
                     Picasso.get().load(locations.get(i).getPath()).placeholder(R.drawable.nopic).into(im);
@@ -271,20 +293,18 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                     for (int j = 0; j < locations.get(i).getAtributes().length; j++) {
                         TextView p = new TextView(getContext());
                         p.setText(locations.get(i).getAtributes()[j].trim());
-                        p.setPadding(0,10,0,0);
+                        p.setPadding(0, 10, 0, 0);
                         root.addView(p);
                     }
                     for (int j = 0; j < 5; j++) {
                         TextView p = new TextView(getContext());
                         p.setText("bla bla bla");
-                        p.setPadding(0,10,0,0);
+                        p.setPadding(0, 10, 0, 0);
                         root.addView(p);
                     }
-                } else {
-                    locations.get(i).setOpened(false);
-                    profile.setVisibility(View.GONE);
                 }
             }
+
             return false;
         });
 
@@ -298,6 +318,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 overlay = true;
             }
         });
+
+        googleMap.setOnCameraChangeListener(getCameraChangeListener());
 
     }
 
@@ -477,15 +499,13 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private static void constructLocations(Context c){
         for (int i = 0; i < locations.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(locations.get(i).getLat(), locations.get(i).getLng()))
-                    .icon(bitmapDescriptorFromVector(c, R.drawable.ic_baseline_local_bar_24, 100,100))
+                    .icon(bitmapDescriptorFromVector(c, R.drawable.bar_pin, 80,100))
                     .snippet(locations.get(i).getTAG());
-            map.addMarker(markerOptions);
+            markers.add(map.addMarker(markerOptions));
         }
     }
 
     private void localise(){
-        if(thisIsMe != null)
-            thisIsMe.remove();
 
         LocationTrack locationTrack = new LocationTrack(getContext(), getActivity());
 
@@ -494,44 +514,9 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             double longitude = locationTrack.getLongitude();
             double latitude = locationTrack.getLatitude();
 
-            if(latitude == 0 && longitude == 0) {
-                LocationTrack locationTrack1 = new LocationTrack(getContext(), getActivity());
-
-                if (locationTrack1.canGetLocation()) {
-
-                    double longitude1 = locationTrack1.getLongitude();
-                    double latitude1 = locationTrack1.getLatitude();
-
-                    me = new LatLng(latitude1, longitude1);
-
-                    MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
-                            .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100, 100));
-
-                    map.animateCamera(CameraUpdateFactory.newLatLng(me));
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
-
-                    thisIsMe = map.addMarker(markerOptions);
-
-                    runServer(getContext());
-
-                    return;
-                }
-            }
-
             me = new LatLng(latitude, longitude);
-
-            MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
-                    .icon(bitmapDescriptorFromVector(getContext(), R.drawable.location, 100, 100));
-
-            map.animateCamera(CameraUpdateFactory.newLatLng(me));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(me, ZOOM));
-
-            thisIsMe = map.addMarker(markerOptions);
-
-            runServer(getContext());
-
-            Evenimente.setEventsNearMe(getContext(), latitude, longitude);
         }
+
     }
 
     private void localiseWithoutMoving(){
@@ -545,6 +530,11 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             double longitude = locationTrack.getLongitude();
             double latitude = locationTrack.getLatitude();
 
+            if(Math.abs(me.latitude - latitude) > 0.2 || Math.abs(me.longitude - longitude) > 0.2){
+                runServer(getContext());
+                Evenimente.setEventsNearMe(getContext(), latitude, longitude);
+            }
+
             me = new LatLng(latitude, longitude);
 
             MarkerOptions markerOptions = new MarkerOptions().position(me).title("me").snippet("")
@@ -552,5 +542,20 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
             thisIsMe = map.addMarker(markerOptions);
         }
+    }
+
+    public GoogleMap.OnCameraChangeListener getCameraChangeListener()
+    {
+        return position -> {
+            if(position.zoom <= 12.6f){
+                for (int i = 0; i < markers.size(); i++) {
+                    markers.get(i).setVisible(false);
+                }
+            } else {
+                for (int i = 0; i < markers.size(); i++) {
+                    markers.get(i).setVisible(true);
+                }
+            }
+        };
     }
 }

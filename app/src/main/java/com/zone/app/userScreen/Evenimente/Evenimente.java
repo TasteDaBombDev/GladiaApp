@@ -267,7 +267,7 @@ public class Evenimente extends Fragment {
         StringRequest stringRequest =  new StringRequest(Request.Method.POST, urlUpload, response -> {
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                for (int i = 0; i < (jsonObject.length() - 1) / 8; i++) {
+                for (int i = 0; i < (jsonObject.length() - 1) / 9; i++) {
                     database.addVal(new EventsDetails(i,
                             jsonObject.getDouble("distance" + i),
                             jsonObject.getInt("id" + i),
